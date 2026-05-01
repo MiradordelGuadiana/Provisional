@@ -131,7 +131,7 @@ document.querySelectorAll('.accordion-header').forEach(button => {
     }
 
     // ==========================================
-    // 5. Envío del Formulario de Reserva y WhatsApp
+    // 5. Envío del Formulario de Reserva (Solo WhatsApp)
     // ==========================================
     const formReserva = document.getElementById('form-reserva');
     const mensajeDiv = document.getElementById('mensaje-reserva');
@@ -142,76 +142,50 @@ document.querySelectorAll('.accordion-header').forEach(button => {
         inputFecha.setAttribute('min', hoy);
     }
 
-    let enviandoReserva = false; 
-
     if(formReserva) {
         formReserva.onsubmit = function(e) {
-            e.preventDefault(); 
+            e.preventDefault(); // Evitamos que la página se recargue al enviar
             
-            if (enviandoReserva) return; 
-            enviandoReserva = true; 
+            // 1. Mostramos un mensaje de éxito en la web
+            mensajeDiv.innerHTML = '<div class="alert alert-success">¡Redirigiendo a WhatsApp para solicitar tu reserva!</div>';
             
-            const btnSubmit = formReserva.querySelector('.btn-submit');
-            btnSubmit.disabled = true; 
-            btnSubmit.textContent = 'Procesando...'; 
+            // 2. Recogemos los valores que el cliente acaba de escribir
+            const nom = document.getElementById('nombre').value;
+            const fec = document.getElementById('fecha').value;
+            const hor = document.getElementById('hora').value;
+            const per = document.getElementById('personas').value;
+            const com = document.getElementById('comentario').value;
+
+            // 3. Montamos el mensaje con formato (los asteriscos hacen negrita en WhatsApp)[cite: 3]
+            let mensajeWA = `¡Hola! Me gustaría solicitar una reserva. Aquí están mis datos:\n\n`;
+            mensajeWA += `· *Nombre:* ${nom}\n`;
+            mensajeWA += `· *Fecha:* ${fec}\n`;
+            mensajeWA += `· *Hora:* ${hor}\n`;
+            mensajeWA += `· *Personas:* ${per}\n`;
             
-            const formData = new FormData(this);
+            if (com.trim() !== "") {
+                mensajeWA += `· *Comentario:* ${com}\n`;
+            }
+            
+            mensajeWA += `\n¿Me confirmáis disponibilidad? ¡Gracias!`;
 
-            fetch('procesar_reserva.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.text())
-            .then(data => {
-                if(data.trim() === "success") {
-                    mensajeDiv.innerHTML = '<div class="alert alert-success">¡Reserva guardada! Redirigiendo a WhatsApp para confirmar...</div>';
-                    
-                    // --- MAGIA DE WHATSAPP ---
-                    // 1. Recogemos los valores que el cliente acaba de escribir
-                    const nom = document.getElementById('nombre').value;
-                    const fec = document.getElementById('fecha').value;
-                    const hor = document.getElementById('hora').value;
-                    const per = document.getElementById('personas').value;
-                    const com = document.getElementById('comentario').value;
+            // 4. El número de teléfono del local[cite: 3]
+            const telefonoDueño = "34615186382";
 
-                    // 2. Montamos el mensaje con formato (los asteriscos hacen negrita en WhatsApp)
-                    let mensajeWA = `¡Hola! Acabo de realizar una reserva a través de la página web. Aquí están mis datos:\n\n`;
-                    mensajeWA += `· *Nombre:* ${nom}\n`;
-                    mensajeWA += `· *Fecha:* ${fec}\n`;
-                    mensajeWA += `· *Hora:* ${hor}\n`;
-                    mensajeWA += `· *Personas:* ${per}\n`;
-                    
-                    if (com.trim() !== "") {
-                        mensajeWA += `*Comentario:* ${com}\n`;
-                    }
-                    
-                    mensajeWA += `\n¿Me confirmáis que está todo correcto? ¡Gracias!`;
+            // 5. Codificamos el texto para que las URLs lo entiendan[cite: 3]
+            const textoCodificado = encodeURIComponent(mensajeWA);
 
-                    // 3. El número de teléfono del dueño (SIN el +, SIN ceros delante y SIN espacios)
-                    
-                    const telefonoDueño = "34615186382";
+            // 6. Creamos el enlace oficial de WhatsApp y lo abrimos en una nueva pestaña[cite: 3]
+            const urlWhatsApp = `https://wa.me/${telefonoDueño}?text=${textoCodificado}`;
+            window.open(urlWhatsApp, '_blank');
 
-                    // 4. Codificamos el texto para que las URLs lo entiendan (convierte espacios en %20, etc.)
-                    const textoCodificado = encodeURIComponent(mensajeWA);
-
-                    // 5. Creamos el enlace oficial de WhatsApp y lo abrimos en una nueva pestaña
-                    const urlWhatsApp = `https://wa.me/${telefonoDueño}?text=${textoCodificado}`;
-                    window.open(urlWhatsApp, '_blank');
-                    // -------------------------
-
-                    formReserva.reset(); 
-                } else {
-                    mensajeDiv.innerHTML = '<div class="alert alert-error">Hubo un error al procesar tu reserva. Error: ' + data + '</div>';
-                }
-            })
-            .catch(error => {
-                mensajeDiv.innerHTML = '<div class="alert alert-error">Error de conexión con el servidor.</div>';
-            })
-            .finally(() => {
-                enviandoReserva = false; 
-                btnSubmit.disabled = false;
-                btnSubmit.textContent = 'Confirmar Reserva';
-            });
+            // 7. Limpiamos el formulario para que quede en blanco[cite: 3]
+            formReserva.reset(); 
+            
+            // Opcional: Quitar el mensaje de la web pasados unos segundos
+            setTimeout(() => {
+                mensajeDiv.innerHTML = '';
+            }, 5000);
         };
     }
     // ==========================================
