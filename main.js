@@ -128,6 +128,34 @@ document.querySelectorAll('.accordion-header').forEach(button => {
             }
             updateCarousel();
         }, 5000); 
+
+        // --- NUEVO CÓDIGO PARA DESLIZAR (SWIPE) EN MÓVILES ---
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        // Detectar dónde pone el dedo el usuario
+        track.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        // Detectar dónde levanta el dedo
+        track.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            checkDirection();
+        }, { passive: true });
+
+        // Comprobar la dirección del deslizamiento
+        function checkDirection() {
+            const umbral = 50; // Píxeles mínimos que hay que arrastrar para cambiar de foto
+            if (touchStartX - touchEndX > umbral) {
+                // Deslizó hacia la izquierda -> Siguiente foto
+                btnNext.click(); 
+            } else if (touchEndX - touchStartX > umbral) {
+                // Deslizó hacia la derecha -> Foto anterior
+                btnPrev.click();
+            }
+        }
+        // --- FIN DEL NUEVO CÓDIGO ---
     }
 
     // ==========================================
