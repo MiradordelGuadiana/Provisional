@@ -545,7 +545,7 @@ body {
 .hamburger span {
     width: 25px;
     height: 3px;
-    background-color: var(--color-secundario); /* <--- Ahora usarán tu dorado elegante */
+    background-color: var(--color-secundario); 
     transition: all 0.3s ease;
     border-radius: 3px;
 }
@@ -606,11 +606,16 @@ body {
         padding: 0 15px;
     }
     .section-title { font-size: 2.2rem; }
-    .seccion { padding: 80px 0; } /* Menos padding vertical en móviles */
+    .seccion { padding: 80px 0; } 
 
     /* Carrusel */
     .carousel-slide img { height: 350px; }
     .slide-caption h3 { font-size: 1.5rem; }
+
+    /* Ocultar los botones del carrusel en dispositivos móviles */
+    .carousel-btn {
+        display: none;
+    }
 
     /* Formulario de Reservas (Arreglo del desbordamiento) */
     .form-row {
@@ -623,24 +628,23 @@ body {
     }
 
     /* Contacto */
-    /* Contacto (Arreglo del desbordamiento) */
     .contacto-grid {
         grid-template-columns: 1fr;
-        padding: 20px; /* Reducimos el relleno gigante que tenía en PC */
+        padding: 20px; 
         gap: 20px;
     }
     
     .contacto-info h3 { 
-        font-size: 1.5rem; /* Título un pelín más pequeño */
+        font-size: 1.5rem; 
     }
     
     .contacto-info p {
-        word-break: break-word; /* OBLIGA al email a saltar de línea si no cabe */
+        word-break: break-word; 
         font-size: 0.95rem;
     }
 
     .redes-sociales {
-        flex-wrap: wrap; /* Permite que Facebook o Instagram bajen a otra línea si chocan */
+        flex-wrap: wrap; 
         gap: 10px;
     }
     
