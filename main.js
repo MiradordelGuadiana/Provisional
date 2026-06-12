@@ -227,8 +227,7 @@ document.querySelectorAll('.accordion-header').forEach(button => {
         
         // Definimos los turnos: Comida (12 a 15:45) y Cena (19 a 23:45)
         const turnos = [
-            { inicio: 12, fin: 15 }, // Turno de comida
-            { inicio: 19, fin: 23 }  // Turno de cena
+            { inicio: 12, fin: 23 } 
         ];
 
         turnos.forEach(turno => {
