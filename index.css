@@ -289,6 +289,7 @@ body {
 .carousel-track {
     display: flex;
     transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    touch-action: pan-y; /* Permite hacer scroll vertical, pero bloquea las acciones táctiles horizontales nativas del navegador */
 }
 
 .carousel-slide {
